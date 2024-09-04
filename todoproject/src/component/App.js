@@ -1,4 +1,4 @@
-import {useState, useRef} from "react";
+import {useReducer, useRef} from "react";
 import './App.css';
 import Header from './Header';
 import TodoEditor from './TodoEditor';
@@ -25,36 +25,58 @@ const mockTodo = [
   },
 ];
 
+function reducer(state, action) {
+  switch(action.type) {
+    case "CREATE": {
+      return [action.newItem, ...state];
+    }
+    case "UPDATE": {
+      return state.map((it) =>
+        it.id === action.targetId ? {...it, isDone: !it.isDone} : it
+      );
+    }
+    case "DELETE": {
+      return state.filter((it) => it.id !== action.targetId);
+    }
+    default:
+      return state;
+  }
+}
+
  function App() {
-  //useState를 이용해 할 일 아이템의 상태를 관리할 State를 만듦
-  const [todo, setTodo] = useState(mockTodo); 
+  const [todo, dispatch] = useReducer(reducer, mockTodo);
+
   const idRef = useRef(3); //목 데이터의 id가 0,1,2 -> 초깃값 3으로 설정
 
   //새 할 일 아이템을 추가하는 함수
   const onCreate = (content) => {
-    const newItem = {
-      id: idRef.current,
-      content,
-      isDone: false,
-      createdDate: new Date().getTime(),
-    };
-    setTodo([newItem, ...todo]);
+    dispatch({
+      type: "CREATE",
+      newItem: {
+        id: idRef.current,
+        content,
+        isDone: false,
+        createdDate: new Date().getTime(),
+      },
+    });
     idRef.current += 1;
   };
 
   //아이템 수정 함수
   const onUpdate = (targetId) => {
-    setTodo(
-      todo.map((it) => 
-          it.id === targetId ? {...it,isDone: !it.isDone} : it
-      )
-    );
+    dispatch({
+      type: "UPDATE",
+      targetId,
+    });
   };
 
   //아이템 삭제 함수
   const onDelete = (targetId) => {
-    setTodo(todo.filter((it) => it.id !== targetId));
-  }
+    dispatch({
+      type: "DELETE",
+      targetId,
+    });
+  };
 
    return (
      <div className="App">
