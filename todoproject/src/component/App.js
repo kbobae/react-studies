@@ -1,4 +1,4 @@
-import {useReducer, useRef} from "react";
+import {useCallback, useReducer, useRef} from "react";
 import './App.css';
 import Header from './Header';
 import TodoEditor from './TodoEditor';
@@ -62,21 +62,21 @@ function reducer(state, action) {
     idRef.current += 1;
   };
 
-  //아이템 수정 함수
-  const onUpdate = (targetId) => {
+  //아이템 수정 함수 - 최적화(useCallback으로 메모이제이션)
+  const onUpdate = useCallback((targetId) => {
     dispatch({
       type: "UPDATE",
       targetId,
     });
-  };
+  }, []);
 
-  //아이템 삭제 함수
-  const onDelete = (targetId) => {
+  //아이템 삭제 함수 - 최적화(useCallback으로 메모이제이션)
+  const onDelete = useCallback((targetId) => {
     dispatch({
       type: "DELETE",
       targetId,
     });
-  };
+  }, []);
 
    return (
      <div className="App">
