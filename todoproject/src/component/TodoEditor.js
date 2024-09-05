@@ -1,7 +1,10 @@
-import { useState, useRef } from "react";
+import { useContext, useState, useRef } from "react";
+import { TodoDispatchContext } from "./App";
 import "./TodoEditor.css";
 
- const TodoEditor = ({onCreate}) => {
+ const TodoEditor = () => {
+    const {onCreate} = useContext(TodoDispatchContext);
+
     //사용자가 입력 폼에 입력한 데이터를 저장할 State 변수 content를 만듦
     const [content, setContent] = useState("");
     const inputRef = useRef();

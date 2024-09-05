@@ -1,8 +1,16 @@
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
+import { TodoStateContext } from "./App";
 import TodoItem from "./TodoItem";
 import "./TodoList.css";
 
- const TodoList = ({todo, onUpdate, onDelete}) => {
+ const TodoList = () => {
+    //TodoStateContext.Provider에서 객체 데이터가 아닌 todo 배열을 전달 -> {todo}를 todo로 수정
+    const todo = useContext(TodoStateContext);
+
+    //useContext를 호출하고 TodoContext를 인수로 전달해 이 Context가 공급하는 데이터를 storeData에 저장
+    // const storeData = useContext(TodoContext);
+    // console.log(storeData);
+
     //검색어 처리할 State 변수 만들기
     const [search, setSearch] = useState("");
     const onChangeSearch = (e) => {
@@ -50,12 +58,18 @@ import "./TodoList.css";
                 // map을 이용해 HTML 요소 반복하여 렌더링
                 // <div>{it.content}</div>
                 // map을 이용해 컴포넌트 반복/ key 설정(컴포넌트 구분)
-                    <TodoItem key={it.id} {...it} 
-                            onUpdate={onUpdate} onDelete={onDelete}/>
+                    <TodoItem key={it.id} {...it} />
                 ))}
             </div>
         </div>
      ) 
+ };
+
+ //TodoList 컴포넌트에 전달하는 Props 모두 제거함
+ //-> Todo 값이 undefined이므로 length 프로퍼티로 접근하면 오류 발생
+ //-> todo의 기본값을 빈 배열로 하는 defaultProps 설정
+ TodoList.defaultProps = {
+    todo: [],
  };
 
  export default TodoList;

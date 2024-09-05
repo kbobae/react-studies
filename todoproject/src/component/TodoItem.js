@@ -1,8 +1,11 @@
-import React from "react";
+import React, {useContext} from "react";
+import { TodoDispatchContext } from "./App";
 import "./TodoItem.css";
 
 //Props를 구조 분해 할당
-const TodoItem = ({id, content, isDone, createdDate, onUpdate, onDelete}) => {
+const TodoItem = ({id, content, isDone, createdDate}) => {
+    const {onUpdate, onDelete} = useContext(TodoDispatchContext);
+
     console.log(`${id} TodoItem 업데이트`);
     //onUpdate를 호출하고 인수로 현재 틱이 발생한 아이템의 id 전달
     const onChangeCheckbox = () => {
