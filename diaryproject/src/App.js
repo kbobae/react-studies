@@ -10,44 +10,30 @@ import Edit from "./pages/Edit";
 export const DiaryStateContext = React.createContext();
 export const DiaryDispatchContext = React.createContext();
 
-//컴포넌트의 라이프 사이클과 관련 없고, 컴포넌트가 리렌더할 때 다시 생성할
-//필요가 없는 값이나 함수는 반드시 컴포넌트 외부에 선언
-const mockData = [
-  {
-    id: "mock1",
-    date: new Date().getTime() - 1,
-    content: "mock1",
-    emotionId: 1,
-  },
-  {
-    id: "mock2",
-    date: new Date().getTime() - 2,
-    content: "mock2",
-    emotionId: 2,
-  },
-  {
-    id: "mock3",
-    date: new Date().getTime() - 3,
-    content: "mock3",
-    emotionId: 3,
-  },
-];
-
+//일기 데이터 업데이트할 때마다 로컬 스토리지에 저장
 function reducer(state, action) {
   switch(action.type) {
     case "INIT": {
       return action.data;
     }
     case "CREATE": {
-      return [action.data, ...state];
+      const newState = [action.data, ...state];
+      localStorage.setItem("diary", JSON.stringify(newState));
+      return newState;
     }
     case "UPDATE": {
-      return state.map((it) => 
+      const newState = state.map((it) =>
         String(it.id) === String(action.data.id) ? {...action.data} : it
       );
+      localStorage.setItem("diary", JSON.stringify(newState));
+      return newState;
     }
     case "DELETE": {
-      return state.filter((it) => String(it.id) !== String(action.targetId));
+      const newState = state.filter(
+        (it) => String(it.id) !== String(action.targetId)
+      );
+      localStorage.setItem("diary", JSON.stringify(newState));
+      return newState;
     }
     default: {
       return state;
@@ -62,12 +48,22 @@ function App() {
   const [data, dispatch] = useReducer(reducer, []);
   const idRef = useRef(0);
 
+  //로컬 스토리지에 저장한 데이터를 가져와 일기 State 초기화
   useEffect(() => {
-    dispatch({
-      type: "INIT",
-      data: mockData,
-    });
-    setIsDataLoaded(true); //데이터 로딩 모두 완료 시 true로 변경
+    const rawData = localStorage.getItem("diary");
+    if(!rawData) {
+      setIsDataLoaded(true);
+      return;
+    }
+    const localData = JSON.parse(rawData);
+    if(localData.length === 0) {
+      setIsDataLoaded(true);
+      return;
+    }
+    localData.sort((a, b) => Number(b.id) - Number(a.id)); //불러온 일기데이터를 내림차순으로 정렬
+    idRef.current = localData[0].id + 1; //id 중복 방지
+    dispatch({type: "INIT", data: localData});
+    setIsDataLoaded(true);
   }, []);
 
   //새 일기를 생성하는 함수
