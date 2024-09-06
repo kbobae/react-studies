@@ -80,3 +80,9 @@ export const getMonthRangeByDate = (date) => {
     ).getTime();
     return {beginTimeStamp, endTimeStamp};
 };
+
+//페이지마다 다른 제목 설정
+export const setPageTitle = (title) => {
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerText = title;
+};

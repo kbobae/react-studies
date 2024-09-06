@@ -2,9 +2,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import useDiary from "../hooks/useDiary";
 import Button from "../component/Button";
 import Header from "../component/Header";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { DiaryDispatchContext } from "../App";
 import Editor from "../component/Editor";
+import { setPageTitle } from "../util";
 
 const Edit = () => {
     const {id} = useParams();
@@ -14,6 +15,10 @@ const Edit = () => {
     const goBack = () => {
         navigate(-1);
     };
+
+    useEffect(() => {
+        setPageTitle(`${id}번 일기 수정하기`);
+    }, []);
 
     const {onUpdate, onDelete} = useContext(DiaryDispatchContext);
     //window.confirm -> 사용자에게 인수로 전달한 텍스트와 함께 경고 대화상자를 출력하는 브라우저 메소드

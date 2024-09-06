@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { DiaryStateContext } from "../App";
 import Button from "../component/Button";
 import Header from "../component/Header";
-import { getMonthRangeByDate } from "../util";
+import { getMonthRangeByDate, setPageTitle } from "../util";
 import DiaryList from "../component/DiaryList";
 
 const Home = () => {
@@ -24,6 +24,7 @@ const Home = () => {
 
     //Home 컴포넌트의 pivotDate가 변할 때마다 해당 월에 작성된 일기를 필터링
     useEffect(() => {
+        setPageTitle("감정 일기장");
         if (data.length >= 1){
             const {beginTimeStamp, endTimeStamp} = getMonthRangeByDate(pivotDate);
             setFilteredData(
