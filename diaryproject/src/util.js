@@ -66,3 +66,17 @@ export const emotionList = [
         img: getEmotionImgById(5),
     },
 ];
+
+//매개변수 date로 Date객체에서 해당 월의 각장 빠른 시간과 가장 늦은 시간의 타임 스탬프값을 구해 반환
+export const getMonthRangeByDate = (date) => {
+    const beginTimeStamp = new Date(date.getFullYear(), date.getMonth(), 1).getTime();
+    const endTimeStamp = new Date(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        0,
+        23,
+        59,
+        59
+    ).getTime();
+    return {beginTimeStamp, endTimeStamp};
+};
