@@ -1,5 +1,5 @@
 import "./Editor.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { emotionList, getFormattedDate } from "../util";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
@@ -54,12 +54,13 @@ const Editor = ({initData, onSubmit}) => {
     };
 
     //감정 이미지 선택 섹션에서 클릭한 이미지 번호를 emotionId에 저장한 후 이 번호로 현재 State의 emotionId값을 업데이트
-    const handleChangeEmotion = (emotionId) => {
-        setState({
+    //Editor 컴포넌트를 리렌더 해도 함수 handleChangeEmotion을 다시 생성하지 않도록 메모이제이션 후 함수형 업데이트 사용
+    const handleChangeEmotion = useCallback((emotionId) => {
+        setState((state) => ({
             ...state,
             emotionId,
-        });
-    };
+        }));
+    }, []);
 
     return (
         <div className="Editor">
